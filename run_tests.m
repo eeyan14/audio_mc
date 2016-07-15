@@ -1,4 +1,4 @@
-function [train_data, test_data, accuracy, predictions] = run_tests(num_keywords,n_divide,n_sec)
+function [test_class, other_class, predictions, accuracy, model] = run_tests(num_keywords,n_divide,n_sec)
 % runs various tests
 % num_keywords: 1, 2, 3, 4
 % n_divide: divides data into n_divide points 
@@ -33,40 +33,32 @@ Fs = 44100*n_sec;
 
 %%% test different combinations of words
 num_record = 40; % # of audio files used for training set
+classifier = 'name';
 for num_permutations = 1:length(permutations(:,1))
     fprintf('getting training data for keywords:');
     disp(permutations(num_permutations,1:end));
-    [train_data,train_class] = get_set(permutations(num_permutations,1:end), names, 1, ...
-                                       num_record, Fs, 'name', top_folder, audio_folder);
+    [train_data,train_class,~] = get_set(permutations(num_permutations,1:end), names, 1, ...
+                                       num_record, Fs, classifier, top_folder, audio_folder);
 
     fprintf('fitting model...\n');
-    %if ~isequal(n_divide,Fs) % only run div_data if necessary
-        train_data_mean = zeros(length(train_data(:,1)),n_divide);
-        for i = 1 : length(train_data(:,1))
-            train_data_mean(i,:) = div_data(train_data(i,:),n_divide,2^10);
-        end % i
-        model = fitcecoc(train_data_mean,train_class);
-    %else
-    %    model = fitcsvm(train_data,train_class);
-    %end % if
+    train_data_mean = zeros(length(train_data(:,1)),n_divide);
+    for i = 1 : length(train_data(:,1))
+        train_data_mean(i,:) = div_data(train_data(i,:),n_divide,2^10);
+    end % i
+    model = fitcecoc(train_data_mean,train_class);
     
     fprintf('getting testing data for keywords:');
     disp(permutations(num_permutations,1:end));
-    [test_data,test_class] = get_set(permutations(num_permutations,1:end), names, num_record+1,...
-                                     num_files, Fs, 'name', top_folder, audio_folder);
+    [test_data,test_class,other_class] = get_set(permutations(num_permutations,1:end), names, num_record+1,...
+                                     num_files, Fs, classifier, top_folder, audio_folder);
     
     fprintf('predicting...\n');
-    %if ~isequal(n_divide,Fs) % only run div_data if necessary
-        test_data_mean = zeros(length(test_data(:,1)),n_divide);
-        for i = 1 : length(test_data(:,1))
-            test_data_mean(i,:) = div_data(test_data(i,:),n_divide,2^10);
-        end
-        predictions = predict(model,test_data_mean);
-        accuracy(num_permutations,1) = sum(strcmp(predictions,test_class)) / length(predictions);
-    %else
-    %    predictions = predict(model,test_data);
-    %    accuracy = sum(strcmp(predictions,test_class)) / length(predictions);
-    %end
+    test_data_mean = zeros(length(test_data(:,1)),n_divide);
+    for i = 1 : length(test_data(:,1))
+        test_data_mean(i,:) = div_data(test_data(i,:),n_divide,2^10);
+    end
+    predictions = predict(model,test_data_mean);
+    accuracy(num_permutations,1) = sum(strcmp(predictions,test_class)) / length(predictions);
     
     % fprintf('accuracy: %f\n\n',accuracy);
     
