@@ -1,4 +1,4 @@
-function [] = plotstuff(test_names, test_keywords, predictions)
+function [] = plotstuff_nm(test_names, test_keywords, predictions)
 % plot...something
 % http://www.mathworks.com/matlabcentral/fileexchange/35272-matlab-plot-gallery-stacked-bar-chart/content/html/Stacked_Bar_Chart.html
 
