@@ -1,4 +1,4 @@
-function [acc] = run_tests_2(words,n_divide,n_sec,top_folder,audio_folder)
+function [acc,train_data_mean] = run_tests_2(words,n_divide,n_sec,top_folder,audio_folder)
 % classifies by 'word' and 'not word'
 %   words: cell array of keywords
 %   n_divide: 1-512 divisions
@@ -29,7 +29,7 @@ for i = 1 : length(test_data(:,1))
 end % i
 
 % run ML on classifying each word
-for w = 1:length(words)
+for w = 1:1 %length(words)
     pos_train_class = strcmp(words(w),train_class);
     pos_test_class = strcmp(words(w),test_class);
     fprintf('fitting model (word %i)...\n',w);

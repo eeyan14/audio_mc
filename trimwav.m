@@ -1,4 +1,4 @@
-function [data] = trimwav(keywords,num_files)
+function [data] = trimwav(keywords,num_files,Fs,top_folder,audio_folder)
 % trim waveform
 % works well(ish): watson, siri
 % - watson: could trim more, would be less than 1 sec
@@ -8,11 +8,11 @@ function [data] = trimwav(keywords,num_files)
 % - google: max is sometimes first syllable but sometimes second
 
 names = {'ch_','es_'};
-Fs = 44100;
+% Fs = 44100;
 shift = 0.05*Fs;
 data = zeros(num_files*length(names)*length(keywords),Fs);
-top_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016';
-trim_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\audio_trim';
+% top_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016';
+% trim_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\audio_trim';
 
 counter = 1;
 % get all the audio files
@@ -82,7 +82,7 @@ for i = 1 : length(keywords)
             filename = get_filename(kw,nm,j,1);
             % disp('trimmed:');
             % disp(filename);
-            cd(trim_folder);
+            cd(audio_folder);
             audiowrite(filename, trimmedword, Fs);
             data(counter,:) = trimmedword;
             counter = counter + 1;
@@ -99,13 +99,17 @@ end % trimwav
 function [folder] = folder_name(word)
 
 if(strcmp(word,'watson'))
-    folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\watson';
+    folder = '\\engin-labs.m.storage.umich.edu\eeyan\windat.V2\Documents\audio_mc\watson';
+    %folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\watson';
 elseif(strcmp(word,'siri'))
-    folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\siri';
+    folder = '\\engin-labs.m.storage.umich.edu\eeyan\windat.V2\Documents\audio_mc\siri';
+    %folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\siri';
 elseif(strcmp(word,'okay'))
-    folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\okay';
+    folder = '\\engin-labs.m.storage.umich.edu\eeyan\windat.V2\Documents\audio_mc\okay';
+    %folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\okay';
 else
-    folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\google';
+    folder = '\\engin-labs.m.storage.umich.edu\eeyan\windat.V2\Documents\audio_mc\google';
+    %folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\google';
 end % if
 
 end % folder_name

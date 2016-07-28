@@ -1,5 +1,5 @@
 function [filename] = get_filename(keyword, name, idx, trim)
-% returns a file name to open im mclearner.m
+% returns a file name to open in mclearner.m
 % keyword, name, idx are ints
 % keywords: 1) watson
 %           2) siri

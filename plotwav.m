@@ -1,11 +1,11 @@
-function [] = plotwav(data, keywords, num_people, num_record)
+function [] = plotwav(data, keywords, num_people, num_record, top_folder, audio_folder)
 % plots data onto num_keyword different figures (aka if num_keyword == 4, 
 % there will be 4 figures)
 % each figure has num_record*num_people different subplots
 
 
-top_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016';
-audio_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\audio_trim';
+% top_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016';
+% audio_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\audio_trim';
 keyword = {'watson','siri','okay','google'};
 
 % open .wav files and plot
