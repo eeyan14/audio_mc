@@ -1,18 +1,13 @@
-function [data] = trimwav(keywords,num_files,Fs,top_folder,audio_folder)
+function [data] = trimwav(keywords,num_files,Fs)
 % trim waveform
-% works well(ish): watson, siri
-% - watson: could trim more, would be less than 1 sec
-% - siri: outlier points screw things up; stuff is being cut off?
-% not as good: okay, google
-% - okay: not enough consistency; find second max maybe?
-% - google: max is sometimes first syllable but sometimes second
+% keywords: self explanatory
+% num_files: # of recordings per word, per person ( = 50)
 
-names = {'ch_','es_'};
-% Fs = 44100;
+names = {'ch_','es_','jo_'};
 shift = 0.05*Fs;
 data = zeros(num_files*length(names)*length(keywords),Fs);
-% top_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016';
-% trim_folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\audio_trim';
+top_folder = 'C:\Users\eeyan\OneDrive\Documents\UMich\Research 2016';
+trim_folder = 'C:\Users\eeyan\OneDrive\Documents\UMich\Research 2016\audio_trim';
 
 counter = 1;
 % get all the audio files
@@ -55,34 +50,39 @@ for i = 1 : length(keywords)
                 % y = y ./ ratio;
             % end
             
+            % use crop_beginning_time and crop_end_time
+            cd(top_folder)
+            trimmedword = crop_beginning_time(y,scale_factor/2);
+            trimmedword = crop_end_time(trimmedword,scale_factor/2);
+            
             % use 'cross' to find beginning
-            cross = scale_factor / 2;
-            start = find(y > cross,1);
-            if start - shift > 0
-                start = floor(start - shift);
-            else
-                start = 1;
-            end % if
+%             cross = scale_factor / 2;
+%             start = find(y > cross,1);
+%             if start - shift > 0
+%                 start = floor(start - shift);
+%             else
+%                 start = 1;
+%             end % if
             
             % trim
-            trimmedword = zeros(Fs,1);
-            if start > Fs
-                numpoints = 2*Fs - start;
-                trimmedword(1:numpoints) = y(start:start+numpoints-1);
-            else
-                trimmedword = y(start:start+Fs-1);
-            end % if
-            if isempty(trimmedword)
-                disp(i);
-                break;
-            end % if
+%             trimmedword = zeros(Fs,1);
+%             if start > Fs
+%                 numpoints = 2*Fs - start;
+%                 trimmedword(1:numpoints) = y(start:start+numpoints-1);
+%             else
+%                 trimmedword = y(start:start+Fs-1);
+%             end % if
+%             if isempty(trimmedword)
+%                 disp(i);
+%                 break;
+%             end % if
             
             % save to new .wav file
-            cd(top_folder);
+            % cd(top_folder);
             filename = get_filename(kw,nm,j,1);
             % disp('trimmed:');
             % disp(filename);
-            cd(audio_folder);
+            cd(trim_folder);
             audiowrite(filename, trimmedword, Fs);
             data(counter,:) = trimmedword;
             counter = counter + 1;
@@ -99,17 +99,13 @@ end % trimwav
 function [folder] = folder_name(word)
 
 if(strcmp(word,'watson'))
-    folder = '\\engin-labs.m.storage.umich.edu\eeyan\windat.V2\Documents\audio_mc\watson';
-    %folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\watson';
+    folder = 'C:\Users\eeyan\OneDrive\Documents\UMich\Research 2016\watson';
 elseif(strcmp(word,'siri'))
-    folder = '\\engin-labs.m.storage.umich.edu\eeyan\windat.V2\Documents\audio_mc\siri';
-    %folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\siri';
+    folder = 'C:\Users\eeyan\OneDrive\Documents\UMich\Research 2016\siri';
 elseif(strcmp(word,'okay'))
-    folder = '\\engin-labs.m.storage.umich.edu\eeyan\windat.V2\Documents\audio_mc\okay';
-    %folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\okay';
+    folder = 'C:\Users\eeyan\OneDrive\Documents\UMich\Research 2016\okay';
 else
-    folder = '\\engin-labs.m.storage.umich.edu\eeyan\windat.V2\Documents\audio_mc\google';
-    %folder = 'C:\Users\Esther\OneDrive\Documents\UMich\Research 2016\google';
+    folder = 'C:\Users\eeyan\OneDrive\Documents\UMich\Research 2016\google';
 end % if
 
 end % folder_name
@@ -131,7 +127,9 @@ function name = get_name(n)
 % get name number to input to get_filename
     if (strcmp(n,'ch_'))
         name = 1;
-    else
+    elseif (strcmp(n,'es_'))
         name = 2;
+    else
+        name = 3;
     end % if 
 end % get_name
